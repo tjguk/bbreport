@@ -20,14 +20,7 @@ NUMBUILDS = 6
 DEFAULT_BRANCHES = 'all'
 DEFAULT_TIMEOUT = 2
 MSG_MAXLENGTH = 60
-DEFAULT_OUTPUT = {
-    # keywords: <ansi color>, bright, bold
-    # use an empty string to preserve terminal settings
-    'foreground': '',       # example: white bright
-    'background': '',       # example: black
-    # set to False to disable colors
-    'color': True,
-}
+DEFAULT_OUTPUT = {}
 ANSI_COLOR = ('black', 'red', 'green', 'yellow',
               'blue', 'magenta', 'cyan', 'white')
 
@@ -44,7 +37,7 @@ legacy_dbfile = basefile + '.sqlite'
 # Database connection
 conn = None
 # Known issues
-ISSUES = []
+issues = []
 
 # Common statuses for Builds and Builders
 S_BUILDING = 'building'
@@ -55,9 +48,9 @@ S_UNSTABLE = 'unstable'     # Builder only (intermittent failures)
 S_OFFLINE = 'offline'       # Builder only
 S_MISSING = 'missing'       # Builder only
 
-BUILDER_STATUSES = (S_BUILDING, S_SUCCESS, S_UNSTABLE, S_FAILURE, S_OFFLINE)
+KNOWN_ISSUE = 'known_issue'
 
-KNOWN_ISSUE_COLOR = 'known_issue'
+BUILDER_STATUSES = (S_BUILDING, S_SUCCESS, S_UNSTABLE, S_FAILURE, S_OFFLINE)
 
 # Regular expressions
 RE_BUILD = re.compile('Build #(\d+)</h1>\r?\n?'
@@ -81,14 +74,17 @@ HTMLNOISE = '</span><span class="stdout">'
 # Format output
 SYMBOL = {'black': '.', 'red': '#', 'green': '_', 'yellow': '?', 'blue': '*'}
 
+_escape_sequence = {}
 _colors = {S_SUCCESS: 'green', S_FAILURE: 'red', S_EXCEPTION: 'yellow',
            S_UNSTABLE: 'yellow', S_BUILDING: 'blue', S_OFFLINE: 'black',
-           KNOWN_ISSUE_COLOR: 'blue'}
+           KNOWN_ISSUE: 'blue'}
 
 
-def _prepare_output():
-    default_fg = DEFAULT_OUTPUT['foreground'].lower()
-    default_bg = DEFAULT_OUTPUT['background'].lower()
+def prepare_output():
+    global cformat
+
+    default_fg = DEFAULT_OUTPUT.get('foreground', '').lower()
+    default_bg = DEFAULT_OUTPUT.get('background', '').lower()
     _base = '\x1b[1;' if ('bold' in default_fg) else '\x1b['
     fg_offset = 90 if ('bright' in default_fg) else 30
     bg_offset = 100 if ('bright' in default_bg) else 40
@@ -102,10 +98,9 @@ def _prepare_output():
         _escape_sequence[status] = '%s%s;%sm%%s\x1b[%sm' % \
             (_base, fg_offset + ANSI_COLOR.index(color), bg_color, fg_color)
 
-
-_escape_sequence = {}
-_prepare_output()
-del _colors, _prepare_output
+    if not sys.stdout.isatty() or (str(DEFAULT_OUTPUT.get('color')).lower() in
+                                   ('false', '0', 'off', 'no')):
+        cformat = _cformat_plain
 
 
 def _cformat_plain(text, color, sep=' '):
@@ -122,7 +117,7 @@ def reset_terminal():
         print '\x1b[39;49;00m',
     print
 
-cformat = _cformat_color if DEFAULT_OUTPUT['color'] else _cformat_plain
+cformat = _cformat_color
 
 
 def urlread(url):
@@ -456,10 +451,10 @@ class Build(object):
         if self.failed_tests:
             failed_tests = []
             for test in self.failed_tests:
-                issue = next((issue for issue in ISSUES
+                issue = next((issue for issue in issues
                               if issue.match(test, msg, self.builder)), None)
                 if issue:
-                    test = cformat('%s`%s' % (test, issue.number), KNOWN_ISSUE_COLOR)
+                    test = cformat('%s`%s' % (test, issue.number), KNOWN_ISSUE)
                 failed_tests.append(test)
             failed_count = len(failed_tests)
             if self.result == S_EXCEPTION and failed_count > 2:
@@ -481,16 +476,27 @@ class Build(object):
 
 
 def load_configuration():
-    global ISSUES
+    global issues
 
     conf = ConfigParser()
     conf.read(conffile)
-    if 'issues' not in conf.sections():
+    sections = conf.sections()
+    if 'global' in sections:
+        glow = dict((k.lower(), k) for k in globals())
+        for k, v in conf.items('global'):
+            key = glow.get(k.lower())
+            if key:
+                globals()[key] = v
+    if 'output' in sections:
+        DEFAULT_OUTPUT.update(conf.items('output'))
+    # Prepare the output colors
+    prepare_output()
+    if 'issues' not in sections:
         return
     # Load the known issues
     for num, rule in conf.items('issues'):
         args = (arg.strip() for arg in rule.split(':'))
-        ISSUES.append(MatchIssue(num, *args))
+        issues.append(MatchIssue(num, *args))
 
 
 def upgrade_dbfile():
@@ -748,7 +754,7 @@ def parse_args():
         # ignore the -q option
         options.quiet = 0
 
-    if options.no_color or not sys.stdout.isatty():
+    if options.no_color:
         # replace the colorizer
         cformat = _cformat_plain
 
