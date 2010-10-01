@@ -57,7 +57,7 @@ BUILD_ID = 'revision'
 ANSI_COLOR = ['black', 'red', 'green', 'yellow',
               'blue', 'magenta', 'cyan', 'white']
 
-baseurl = 'http://www.python.org/dev/buildbot/'
+baseurl = 'http://python.org/dev/buildbot/'
 issuesurl = 'http://wiki.bbreport.googlecode.com/hg/KnownIssues.wiki'
 
 # Configuration
@@ -300,6 +300,17 @@ class Builder(object):
         builds = [Build(self.name, num) for (num,) in cur.fetchall()]
         self.add(*builds)
         return builds
+
+    def get_build_url(self, revision=None, build=None):
+        if revision and conn is not None:
+            assert not build
+            cur = conn.execute('SELECT build FROM builds WHERE builder = ? '
+                               'AND revision = ?', (self.name, revision))
+            try:
+                build, = cur.fetchone()
+            except TypeError:
+                return None
+        return '%s/builds/%s/' % (self.url, build or self.lastbuild)
 
     def __eq__(self, other):
         return str(self) == str(other)
@@ -1182,7 +1193,7 @@ def parse_args():
     parser.add_option('-b', '--branches', dest='branches', default=None,
                       metavar='BRANCHES',
                       help='the Python branches (e.g. 2.7,3.x)')
-    parser.add_option('-u', '--build', dest='build', default=None,
+    parser.add_option('-u', '--build', type='int', default=None,
                       metavar='num', help='the build number of a buildslave'
                                           ' (not implemented)')
     parser.add_option('-f', '--failures', dest='failures',
@@ -1210,6 +1221,10 @@ def parse_args():
     parser.add_option('--id', default="revision", type="choice",
                       choices=("revision", "build"),
                       help='build identifier: "revision" or "build"')
+    parser.add_option('--url', default=0, action='count',
+                      help='print the url(s) and exit')
+    parser.add_option('--openurl', default=0, action='count',
+                      help='open the url and exit')
     parser.add_option('--conf', default=conffile,
                       metavar='FILE', help='configuration file')
 
@@ -1351,6 +1366,27 @@ def main():
         pattern = fnmatch.translate(options.name)
         selected_builders = [builder for builder in selected_builders
                              if re.match(pattern, builder.name, re.I)]
+
+    # print or open the URL(s)
+    if options.url or options.openurl:
+        build_url = None
+        revision = options.revision
+        if revision:
+            for builder in selected_builders:
+                revision_url = builder.get_build_url(revision=revision)
+                if revision_url:
+                    build_url = revision_url
+                    out(build_url, cformat(builder, S_BUILDING))
+        else:
+            build = options.build
+            for builder in selected_builders:
+                if not build or 0 <= builder.lastbuild - build < 99:
+                    build_url = builder.get_build_url(build=build)
+                    out(build_url, cformat(builder, S_BUILDING))
+        if build_url and options.openurl:
+            import webbrowser
+            webbrowser.open(build_url)
+        sys.exit(0)
 
     branches = sorted(set(b.branch for b in selected_builders))
     out('Selected builders:', len(selected_builders), '/', len(builders),
