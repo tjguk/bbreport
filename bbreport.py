@@ -81,6 +81,7 @@ S_EXCEPTION = 'exception'   # Build only (mapped to S_FAILURE)
 S_UNSTABLE = 'unstable'     # Builder only (intermittent failures)
 S_OFFLINE = 'offline'       # Builder only
 S_MISSING = 'missing'       # Builder only
+S_RETRY = 'retry'           # Build only
 
 BUILDER_STATUSES = (S_BUILDING, S_SUCCESS, S_UNSTABLE, S_FAILURE, S_OFFLINE)
 
@@ -109,10 +110,12 @@ HTMLNOISE = b('</span><span class="stdout">')
 
 # Format output
 SYMBOL = {S_SUCCESS: '_', S_FAILURE: '#', S_EXCEPTION: '?',
-          S_UNSTABLE: '?', S_BUILDING: '*', S_OFFLINE: '*'}
+          S_UNSTABLE: '?', S_BUILDING: '*', S_OFFLINE: '*',
+          S_RETRY: '#'}
 
 COLOR = {S_SUCCESS: 'green', S_FAILURE: 'red', S_EXCEPTION: 'yellow',
-         S_UNSTABLE: 'yellow', S_BUILDING: 'blue', S_OFFLINE: 'cyan'}
+         S_UNSTABLE: 'yellow', S_BUILDING: 'blue', S_OFFLINE: 'cyan',
+         S_RETRY: 'red'}
 
 _escape_sequence = {}
 
