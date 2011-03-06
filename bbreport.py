@@ -387,7 +387,7 @@ class Build(object):
     If the result is not available, it defaults to S_BUILDING.
     """
     _message = saved = result = None
-    revision = 0
+    revision = ''
 
     def __init__(self, name, buildnum, *args):
         self.builder = name
@@ -424,7 +424,7 @@ class Build(object):
                 # Store the failure details
                 self._message = ' '.join(args[5])
             if revision:
-                self.revision = int(revision)
+                self.revision = revision[:12]
                 self.result = result
         if not self.result:
             # Fallback to the web page
@@ -487,7 +487,7 @@ class Build(object):
             result = S_BUILDING
         match = RE_BUILD_REVISION.search(build_page)
         if match:
-            self.revision = int(match.group(1))
+            self.revision = str(match.group(1))[:12]
         self._load_build()
         return result
 
@@ -827,8 +827,7 @@ class BuilderOutput(AbstractOutput):
             result = build.result
 
             if build.id:
-                id = '%5d' % build.id
-                id = id if not compact else id[-3:]
+                id = build.id if not compact else build.id[:3] + '-'
             else:
                 id = ' *** ' if not compact else '***'
             capsule.append(cformat(id, result, sep=''))
@@ -879,7 +878,7 @@ class BuilderOutput(AbstractOutput):
 
         if not quiet:
             for build in display_builds:
-                out('%4d %5d:' % (build.num, build.revision),
+                out('%4d %s:' % (build.num, build.revision),
                     build.get_message())
 
         return builder_status
@@ -933,7 +932,7 @@ class Branch(object):
     def __init__(self, name):
         self.name = name
         self.revisions = {}
-        self.last_revision = 0
+        self.last_revision = ''
 
 
 class Revision(object):
@@ -958,13 +957,14 @@ class RevisionOutput(AbstractOutput):
     def add_builds(self, name, builds):
         host, branch_name = parse_builder_name(name)
         for build in builds:
-            if build is None or build.revision == 0:
+            if build is None or not build.revision:
                 continue
             try:
                 branch = self.branches[branch_name]
             except KeyError:
                 branch = Branch(branch_name)
                 self.branches[branch.name] = branch
+            # XXX with hg revisions this is broken
             branch.last_revision = max(branch.last_revision, build.revision)
             text = self.format_build(build)
             if text is None:
