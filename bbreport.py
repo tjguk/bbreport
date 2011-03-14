@@ -424,7 +424,7 @@ class Build(object):
                 # Store the failure details
                 self._message = ' '.join(args[5])
             if revision:
-                self.revision = revision[:12]
+                self.revision = revision[:6]
                 self.result = result
         if not self.result:
             # Fallback to the web page
@@ -487,7 +487,7 @@ class Build(object):
             result = S_BUILDING
         match = RE_BUILD_REVISION.search(build_page)
         if match:
-            self.revision = str(match.group(1))[:12]
+            self.revision = str(match.group(1))[:6]
         self._load_build()
         return result
 
@@ -827,7 +827,7 @@ class BuilderOutput(AbstractOutput):
             result = build.result
 
             if build.id:
-                id = build.id if not compact else build.id[:3] + '-'
+                id = build.id
             else:
                 id = ' *** ' if not compact else '***'
             capsule.append(cformat(id, result, sep=''))
