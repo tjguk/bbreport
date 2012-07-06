@@ -57,7 +57,7 @@ BUILD_ID = 'revision'
 ANSI_COLOR = ['black', 'red', 'green', 'yellow',
               'blue', 'magenta', 'cyan', 'white']
 
-baseurl = 'http://buildbot.python.org/all/xmlrpc/'
+baseurl = 'http://buildbot.python.org/'
 issuesurl = 'http://wiki.bbreport.googlecode.com/hg/KnownIssues.wiki'
 
 # Configuration
