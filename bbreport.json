@@ -1,0 +1,776 @@
+{
+ "gone": [
+  {
+   "rules": [
+    {
+     "test": "test_pep277",
+     "message": "",
+     "builder": "x86 Tiger (2.7|3.x)"
+    }
+   ],
+   "issue": "8423"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_subprocess",
+     "message": "hung",
+     "builder": ""
+    }
+   ],
+   "issue": "8429"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_smtpnet",
+     "message": "$",
+     "builder": "AMD64 debian parallel (2.7|3.1|3.x)"
+    }
+   ],
+   "issue": "9774"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_subprocess",
+     "message": "$",
+     "builder": "sparc Debian 3.1"
+    }
+   ],
+   "issue": "8448"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_tarfile",
+     "message": "$",
+     "builder": "AMD64 debian parallel (2.7|3.1|3.x)"
+    }
+   ],
+   "issue": "9773"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_pep277",
+     "message": "$",
+     "builder": "AMD64 debian parallel (2.7|3.x)"
+    }
+   ],
+   "issue": "9772"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_sqlite",
+     "message": "",
+     "builder": "(PPC Leopard|PPC Tiger|sparc Debian) 3.x"
+    }
+   ],
+   "issue": "8845"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_math",
+     "message": "",
+     "builder": "NetBSD 5 i386 3.[x1]"
+    },
+    {
+     "test": "test_cmath",
+     "message": "",
+     "builder": "NetBSD 5 i386 3.[x1]"
+    }
+   ],
+   "issue": "10337"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_lib2to3",
+     "message": "",
+     "builder": "x86 debian parallel 3.x"
+    }
+   ],
+   "issue": "10338"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_subprocess",
+     "message": "",
+     "builder": "x86 debian parallel (3.1|3.x)"
+    }
+   ],
+   "issue": "8391"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_(curses|gdb)",
+     "message": "$",
+     "builder": "ia64 Ubuntu 2.7"
+    }
+   ],
+   "issue": "outdated"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_bsddb3",
+     "message": "$",
+     "builder": "x86 Windows7 (2.6|2.7)"
+    }
+   ],
+   "issue": "6462"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_warnings",
+     "message": "$",
+     "builder": "PPC Tiger 3.x"
+    }
+   ],
+   "issue": "8589"
+  }
+ ],
+ "count_new": 16,
+ "count_build": 4,
+ "broken": [
+  {
+   "messages": [
+    "# compile"
+   ],
+   "host": "3.x.dmg",
+   "branches": [
+    ""
+   ]
+  },
+  {
+   "messages": [
+    "* offline"
+   ],
+   "host": "x86 debian parallel",
+   "branches": [
+    "3.1"
+   ]
+  },
+  {
+   "messages": [
+    "* offline"
+   ],
+   "host": "x86 gentoo",
+   "branches": [
+    "2.7",
+    "3.1",
+    "3.x"
+   ]
+  }
+ ],
+ "changed": "2011-01-12 05:15 UTC",
+ "known": [
+  {
+   "rules": [
+    {
+     "test": "test_ttk_guionly",
+     "message": "",
+     "builder": ".* (Tiger|FreeBSD.*) (2.7|3.1|3.x)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_ttk_guionly",
+     "message": "",
+     "builder": "x86 FreeBSD 3.1",
+     "builds": [
+      [
+       728,
+       87893
+      ]
+     ]
+    },
+    {
+     "test": "test_ttk_guionly",
+     "message": "",
+     "builder": "x86 Tiger 2.7",
+     "builds": [
+      [
+       598,
+       87945
+      ],
+      [
+       597,
+       87944
+      ],
+      [
+       596,
+       87935
+      ]
+     ]
+    },
+    {
+     "test": "test_ttk_guionly",
+     "message": "",
+     "builder": "x86 Tiger 3.1",
+     "builds": [
+      [
+       921,
+       87934
+      ],
+      [
+       920,
+       87893
+      ],
+      [
+       919,
+       87887
+      ]
+     ]
+    },
+    {
+     "test": "test_ttk_guionly",
+     "message": "segmentation fault",
+     "builder": "PPC Tiger 3.1",
+     "builds": [
+      [
+       706,
+       87934
+      ]
+     ]
+    }
+   ],
+   "issue": "8445"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_cmd_line",
+     "message": "",
+     "builder": ".* Tiger (3.x|3.1)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_cmd_line",
+     "message": "",
+     "builder": "PPC Tiger 3.1",
+     "builds": [
+      [
+       705,
+       87893
+      ],
+      [
+       704,
+       87887
+      ]
+     ]
+    },
+    {
+     "test": "test_cmd_line",
+     "message": "",
+     "builder": "x86 Tiger 3.1",
+     "builds": [
+      [
+       921,
+       87934
+      ],
+      [
+       919,
+       87887
+      ]
+     ]
+    }
+   ],
+   "issue": "8458"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "(x86 FreeBSD 7.2|ARMv4 Debian) 3.1"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "ARMv4 Debian 3.1",
+     "builds": [
+      [
+       558,
+       87934
+      ],
+      [
+       557,
+       87893
+      ],
+      [
+       556,
+       87887
+      ]
+     ]
+    },
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "x86 FreeBSD 7.2 3.1",
+     "builds": [
+      [
+       935,
+       87934
+      ],
+      [
+       934,
+       87893
+      ],
+      [
+       933,
+       87887
+      ]
+     ]
+    }
+   ],
+   "issue": "5930"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "(PPC Leopard|x86 FreeBSD 7.2) (2.7|3.x)"
+    },
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "sparc solaris10 gcc (2.7|3.x)"
+    },
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "x86 (XP-4 3.x|Windows7 3.1)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_multiprocessing",
+     "message": "hung for 20 min",
+     "builder": "x86 XP-4 3.x",
+     "builds": [
+      [
+       3985,
+       87948
+      ]
+     ]
+    }
+   ],
+   "issue": "8428"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_multiprocessing",
+     "message": "$",
+     "builder": "x86 XP-5 3.1"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_multiprocessing",
+     "message": "",
+     "builder": "x86 XP-5 3.1",
+     "builds": [
+      [
+       1027,
+       87934
+      ]
+     ]
+    }
+   ],
+   "issue": "9592"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_ttk_guionly",
+     "message": "hung",
+     "builder": "x86 XP-5 3.x"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_ttk_guionly",
+     "message": "hung for 20 min",
+     "builder": "x86 XP-5 3.x",
+     "builds": [
+      [
+       2228,
+       87948
+      ],
+      [
+       2227,
+       87943
+      ],
+      [
+       2226,
+       87942
+      ],
+      [
+       2225,
+       87938
+      ]
+     ]
+    }
+   ],
+   "issue": "9931"
+  },
+  {
+   "rules": [
+    {
+     "test": "",
+     "message": "hung",
+     "builder": "(ARM|.* debian parallel)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_xpickle",
+     "message": "hung for 30 min",
+     "builder": "ARMv4 Debian 2.7",
+     "builds": [
+      [
+       383,
+       87935
+      ],
+      [
+       381,
+       87866
+      ]
+     ]
+    }
+   ],
+   "issue": "8431"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_subprocess",
+     "message": "",
+     "builder": ".* (2.7|3.x)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_subprocess",
+     "message": "",
+     "builder": "ARMv4 Debian 3.x",
+     "builds": [
+      [
+       806,
+       87926
+      ],
+      [
+       805,
+       87921
+      ],
+      [
+       804,
+       87908
+      ]
+     ]
+    }
+   ],
+   "issue": "8432"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_float",
+     "message": "",
+     "builder": "ARMv4 Debian (2.6|3.1)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_float",
+     "message": "",
+     "builder": "ARMv4 Debian 3.1",
+     "builds": [
+      [
+       558,
+       87934
+      ],
+      [
+       557,
+       87893
+      ],
+      [
+       556,
+       87887
+      ]
+     ]
+    }
+   ],
+   "issue": "8265"
+  },
+  {
+   "rules": [
+    {
+     "test": "test_(file|file2k|bsddb3)",
+     "message": "(something crashed|hung)",
+     "builder": "x86 XP-[45] (2.6|2.7)"
+    }
+   ],
+   "failures": [
+    {
+     "test": "test_bsddb3",
+     "message": "something crashed",
+     "builder": "x86 XP-4 2.7",
+     "builds": [
+      [
+       667,
+       87944
+      ]
+     ]
+    }
+   ],
+   "issue": "9295"
+  }
+ ],
+ "new": [
+  {
+   "test": "test_bsddb3",
+   "message": "hung for 20 min",
+   "builder": "x86 Windows7 2.7",
+   "builds": [
+    [
+     648,
+     87935
+    ]
+   ]
+  },
+  {
+   "test": "test_distutils",
+   "message": "",
+   "builder": "AMD64 OpenIndiana 3.1",
+   "builds": [
+    [
+     211,
+     87951
+    ],
+    [
+     210,
+     87934
+    ],
+    [
+     209,
+     87893
+    ],
+    [
+     208,
+     87887
+    ]
+   ]
+  },
+  {
+   "test": "test_float",
+   "message": "",
+   "builder": "ARMv4 Debian 3.x",
+   "builds": [
+    [
+     806,
+     87926
+    ],
+    [
+     805,
+     87921
+    ],
+    [
+     804,
+     87908
+    ]
+   ]
+  },
+  {
+   "test": "test_gdb",
+   "message": "",
+   "builder": "AMD64 OpenIndiana 2.7",
+   "builds": [
+    [
+     204,
+     87950
+    ],
+    [
+     203,
+     87945
+    ],
+    [
+     202,
+     87944
+    ],
+    [
+     201,
+     87935
+    ]
+   ]
+  },
+  {
+   "test": "test_gdb",
+   "message": "",
+   "builder": "AMD64 OpenIndiana 3.x",
+   "builds": [
+    [
+     481,
+     87948
+    ],
+    [
+     480,
+     87943
+    ],
+    [
+     479,
+     87942
+    ],
+    [
+     478,
+     87938
+    ]
+   ]
+  },
+  {
+   "test": "test_httpservers",
+   "message": "segmentation fault",
+   "builder": "ARMv4 Debian 2.7",
+   "builds": [
+    [
+     382,
+     87894
+    ]
+   ]
+  },
+  {
+   "test": "test_io",
+   "message": "",
+   "builder": "x86 FreeBSD 3.1",
+   "builds": [
+    [
+     727,
+     87887
+    ]
+   ]
+  },
+  {
+   "test": "test_io",
+   "message": "hung for 30 min",
+   "builder": "x86 FreeBSD 7.2 3.x",
+   "builds": [
+    [
+     1433,
+     87938
+    ]
+   ]
+  },
+  {
+   "test": "test_multiprocessing",
+   "message": "hung for 30 min",
+   "builder": "PPC Tiger 2.7",
+   "builds": [
+    [
+     541,
+     87944
+    ]
+   ]
+  },
+  {
+   "test": "test_pty",
+   "message": "",
+   "builder": "sparc Debian 3.1",
+   "builds": [
+    [
+     167,
+     87252
+    ]
+   ]
+  },
+  {
+   "test": "test_signal",
+   "message": "",
+   "builder": "x86 FreeBSD 2.7",
+   "builds": [
+    [
+     414,
+     87944
+    ]
+   ]
+  },
+  {
+   "test": "test_smtplib",
+   "message": "",
+   "builder": "x86 Windows7 2.7",
+   "builds": [
+    [
+     650,
+     87945
+    ]
+   ]
+  },
+  {
+   "test": "test_socket",
+   "message": "",
+   "builder": "x86 XP-5 3.1",
+   "builds": [
+    [
+     1026,
+     87893
+    ]
+   ]
+  },
+  {
+   "test": "test_threadsignals",
+   "message": "hung for 30 min",
+   "builder": "x86 FreeBSD 3.x",
+   "builds": [
+    [
+     1136,
+     87943
+    ],
+    [
+     1135,
+     87938
+    ]
+   ]
+  },
+  {
+   "test": "test_threadsignals",
+   "message": "hung for 30 min",
+   "builder": "x86 Tiger 3.x",
+   "builds": [
+    [
+     1952,
+     87943
+    ],
+    [
+     1951,
+     87942
+    ],
+    [
+     1950,
+     87938
+    ]
+   ]
+  },
+  {
+   "test": "test_time",
+   "message": "",
+   "builder": "alpha Debian 3.x",
+   "builds": [
+    [
+     677,
+     87919
+    ]
+   ]
+  }
+ ]
+}

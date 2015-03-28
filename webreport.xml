@@ -1,0 +1,254 @@
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Python Buildbot Report"
+               description="see the result of the Python test suite"
+               height="600" width="800">
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[
+    <base target="_top">
+    <style>
+
+      body {
+        padding: 8px;
+      }
+
+      body, th, td {
+        line-height: 110%;
+        font-family: 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+        font-size: 12.5px;
+      }
+
+      code {
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      tbody {
+        padding-top: 300px;
+        margin-top: 300px;
+      }
+
+      th, td {
+        border: 1px solid #aaa;
+        padding: 5px;
+      }
+
+      th {
+        font-weight: bold;
+      }
+
+      .even td {
+        background-color: #eff;
+      }
+
+      .odd td {
+        background-color: #fef;
+      }
+
+      .section_anchor,
+      .section_anchor:visited {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .section_anchor:hover {
+        color: #eaa;
+      }
+
+    </style>
+
+    <div id="header">
+      <h1>Python Buildbot Report</h1>
+
+      <strong>Report buildbot failures.</strong>
+    </div>
+
+    <p><em>Generated on <span id="changed">_WAIT_</span></em></p>
+
+    <p>Data source: <a href="http://www.python.org/dev/buildbot/"
+                       rel="nofollow">http://www.python.org/dev/buildbot/</a></p>
+
+    <p>Analyzing last <strong id="count_build">4</strong> builds for each builder.</p>
+
+    <p><input id="refresh" type="button" value="Refresh page" onclick="makeJSONRequest();"> <em>(updated hourly)</em></p>
+
+    <h2 id="New_failures">New failures<a href="#New_failures" class="section_anchor" target="_self">&para;</a></h2>
+    <p><span id="count_new">?</span> new test failure(s): </p>
+
+    <table>
+      <tr><th>Test</th><th>Message</th><th>Builder</th><th>Revision(s)</th></tr>
+      <tbody id="new"></tbody>
+    </table>
+
+    <h2 id="Known_issues">Known issues<a href="#Known_issues" class="section_anchor" target="_self">&para;</a></h2>
+
+    <table>
+      <tr><th>Issue</th><th>Test</th><th>Message</th><th>Builder</th><th>Revision(s)</th></tr>
+      <tbody id="known"></tbody>
+    </table>
+
+    <h2 id="No_recent_failure">No recent failure<a href="#No_recent_failure" class="section_anchor" target="_self">&para;</a></h2>
+
+    <table>
+      <tr><th>Issue</th><th>Test</th><th>Message</th><th>Builder</th></tr>
+      <tbody id="gone"></tbody>
+    </table>
+
+    <h2 id="Broken_builders">Broken builders<a href="#Broken_builders" class="section_anchor" target="_self">&para;</a></h2>
+
+    <table>
+      <tr><th>Host</th><th>Branch(es)</th><th>Message(s)</th></tr>
+      <tbody id="broken"></tbody>
+    </table>
+
+    <hr>
+
+    <script type="text/javascript">
+
+    var JSONURL = 'http://wiki.bbreport.googlecode.com/hg/bbreport.json';
+    var BASEURL = 'http://www.python.org/dev/buildbot/';
+    var ROUNDUP = 'http://bugs.python.org/issue';
+
+    if (location.search.indexOf('nohead') > 0) {
+      document.getElementById('header').style.display = 'none';
+    }
+
+    function makeJSONRequest(url) {
+      if (!url) {
+        // Do not cache, please.
+        var rnd = Math.abs(new Date().valueOf() >> 15).toString(16);
+
+        url = JSONURL + '?nocache=' + rnd;
+      }
+      var params = {};
+      params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+      set_html('changed', '####################');
+      gadgets.io.makeRequest(url, response, params);
+    }
+
+    function format_line(line, rowspan, class) {
+      var issue = line.issue;
+      var builder = line.builder;
+      var builds = line.builds;
+      var is_issue = (builds == undefined);
+      var html = '<tr' + ((class)? ' class="' + class + '"':'') + '>';
+      if (rowspan) {
+        issue = parseInt(issue) || issue;
+        rowspan = parseInt(rowspan);
+        html += '<td' + ((rowspan > 1)? ' rowspan="' + rowspan + '"':'') + '>';
+        if (issue > 1000) {
+          html += '<a href="' + ROUNDUP + issue + '">' + issue + '</a>';
+        } else if (issue) {
+          html += issue;
+        } else {
+          html += ' \' \' ';
+        }
+        html += '</td>';
+      }
+      var td_open = '<td>';
+      var td_close = '</td>';
+      if (is_issue) {
+        td_open += '<code>';
+        td_close = '</code>' + td_close;
+      }
+      html += td_open + (line.test||'&nbsp;') + td_close;
+      html += td_open + (line.message||'&nbsp;') + td_close;
+      if (is_issue) {
+        html += td_open + (builder||'&nbsp;') + td_close;
+      } else {
+        var burl = BASEURL + 'builders/' + encodeURIComponent(builder) + '/builds/';
+        html += '<td><a href="' + burl + builds[0][0] + '">' + builder + '</a></td>';
+        html += '<td> ';
+        for (var i in builds) {
+          var build = builds[i];
+          var url = burl + build[0] + '/steps/test/logs/stdio';
+          html += '<a href="' + url + '">' + build[1] + '</a> ';
+        }
+        html += '</td>';
+      }
+      html += '</tr>\n';
+      return html;
+    }
+
+    function format_rules(issue, parity) {
+        rule0 = issue.rules[0];
+        rule0.issue = issue.issue;
+        html = format_line(rule0, issue.rules.length, parity);
+        for (var i = 1; i < issue.rules.length; i++) {
+          var rule = issue.rules[i];
+          html += format_line(rule, false, parity);
+        }
+        return html;
+    }
+
+    function set_html(id, html) {
+        el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+
+    function response(obj) {
+      var j = obj.data;
+      set_html('changed', j.changed);
+      set_html('count_last', j.count_last);
+      set_html('count_new', j.count_new);
+      var html = '';
+      var parity = 'odd';
+      var last_test = '';
+      for (var l in j['new']) {
+        fail = j['new'][l];
+        if (fail.test != last_test) {
+          parity = (parity == 'odd') ? 'even' : 'odd';
+          last_test = fail.test;
+        }
+        html += format_line(fail, false, parity);
+      }
+      set_html('new', html);
+      html = '';
+      parity = 'even';
+      for (var l in j.known) {
+        var issue = j.known[l];
+        if (l > 0) {
+          parity = (parity == 'odd') ? 'even' : 'odd';
+        }
+        html += format_rules(issue, parity);
+        for (var f in issue.failures) {
+          var fail = issue.failures[f];
+          html += format_line(fail, true, parity);
+        }
+      }
+      set_html('known', html);
+      html = '';
+      for (var l in j.gone) {
+        html += format_rules(j.gone[l]);
+      }
+      set_html('gone', html);
+      html = '';
+      for (var l in j.broken) {
+        var broken = j.broken[l];
+        var branches = broken.branches;
+        var burl = BASEURL + 'builders/' + encodeURIComponent(broken.host);
+        html += '<tr>';
+        html += '<td>' + broken.host + '</td>';
+        html += '<td> ';
+        for (var b in branches) {
+          var branch = branches[b];
+          html += '<a href="' + burl + ' ' + branch + '">' + branch + '</a> ';
+        }
+        html += '</td>';
+        html += '<td>' + broken.messages.join('<br>') + '</td>';
+        html += '</tr>\n';
+      }
+      set_html('broken', html);
+
+      // Tells gadget to resize itself
+      gadgets.window.adjustHeight();
+    }
+
+    gadgets.util.registerOnLoadHandler(makeJSONRequest);
+    </script>
+
+  ]]>
+  </Content>
+</Module>
